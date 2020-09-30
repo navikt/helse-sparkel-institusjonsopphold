@@ -1,13 +1,15 @@
 package no.nav.helse.sparkel.institusjonsopphold
 
 import net.logstash.logback.argument.StructuredArguments.keyValue
-import no.nav.helse.rapids_rivers.*
-import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.Institusjonsoppholdperiode
+import no.nav.helse.rapids_rivers.JsonMessage
+import no.nav.helse.rapids_rivers.MessageProblems
+import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.helse.rapids_rivers.River
 import org.slf4j.LoggerFactory
 
 internal class Institusjonsoppholdløser(
-        rapidsConnection: RapidsConnection,
-        private val institusjonsoppholdService: InstitusjonsoppholdService
+    rapidsConnection: RapidsConnection,
+    private val institusjonsoppholdService: InstitusjonsoppholdService
 ) : River.PacketListener {
 
     private val sikkerlogg = LoggerFactory.getLogger("tjenestekall")
@@ -33,19 +35,19 @@ internal class Institusjonsoppholdløser(
     override fun onPacket(packet: JsonMessage, context: RapidsConnection.MessageContext) {
         sikkerlogg.info("mottok melding: ${packet.toJson()}")
         institusjonsoppholdService.løsningForBehov(
-                packet["@id"].asText(),
-                packet["vedtaksperiodeId"].asText(),
-                packet["fødselsnummer"].asText()
+            packet["@id"].asText(),
+            packet["vedtaksperiodeId"].asText(),
+            packet["fødselsnummer"].asText()
         ).let { løsning ->
             packet["@løsning"] = mapOf(
-                    behov to (løsning?.get("vedtak")?.map { Institusjonsoppholdperiode(it) } ?: emptyList())
+                behov to (løsning?.map { Institusjonsoppholdperiode(it) } ?: emptyList())
             )
             context.send(packet.toJson().also { json ->
                 sikkerlogg.info(
-                        "sender svar {} for {}:\n\t{}",
-                        keyValue("id", packet["@id"].asText()),
-                        keyValue("vedtaksperiodeId", packet["vedtaksperiodeId"].asText()),
-                        json
+                    "sender svar {} for {}:\n\t{}",
+                    keyValue("id", packet["@id"].asText()),
+                    keyValue("vedtaksperiodeId", packet["vedtaksperiodeId"].asText()),
+                    json
                 )
             })
         }

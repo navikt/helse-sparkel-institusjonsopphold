@@ -1,4 +1,4 @@
-package no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold
+package no.nav.helse.sparkel.institusjonsopphold
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -33,7 +33,6 @@ internal class StsRestClient(
             requestMethod = "GET"
             connectTimeout = 10000
             readTimeout = 10000
-            //TODO: STS
             setRequestProperty("Authorization", serviceUser.basicAuth)
             setRequestProperty("Accept", "application/json")
 

@@ -8,19 +8,13 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance.Lifecycle
 
-@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
 internal class InstitusjonsoppholdløserTest {
-
-    private companion object {
-        private const val orgnummer = "80000000"
-    }
 
     private val wireMockServer: WireMockServer = WireMockServer(WireMockConfiguration.options().dynamicPort())
     private val objectMapper = jacksonObjectMapper()
@@ -110,14 +104,12 @@ internal class InstitusjonsoppholdløserTest {
         """
         {
             "@event_name" : "behov",
-            "@behov" : [ "Pleiepenger" ],
+            "@behov" : [ "Institusjonsopphold" ],
             "@id" : "id",
             "@opprettet" : "2020-05-18",
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
-            "fødselsnummer" : "fnr",
-            "pleiepengerFom" : "2017-05-18",
-            "pleiepengerTom" : "2020-05-18"
+            "fødselsnummer" : "fnr"
         }
         """
 
@@ -125,20 +117,18 @@ internal class InstitusjonsoppholdløserTest {
         """
         {
             "@event_name" : "behov",
-            "@behov" : [ "Pleiepenger" ],
+            "@behov" : [ "Institusjonsopphold" ],
             "@id" : "id",
             "@opprettet" : "2020-05-18",
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
-            "fødselsnummer" : "ikkeTilgang",
-            "pleiepengerFom" : "2017-05-18",
-            "pleiepengerTom" : "2020-05-18"
+            "fødselsnummer" : "ikkeTilgang"
         }
         """
 
     private fun stubEksterneEndepunkt() {
         stubFor(
-            post(urlMatching("/AZURE_TENANT_ID/oauth2/v2.0/token"))
+            get(urlPathEqualTo("/rest/v1/sts/token"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
@@ -153,32 +143,40 @@ internal class InstitusjonsoppholdløserTest {
                 )
         )
         stubFor(
-            post(urlPathEqualTo("/vedtak"))
+            get(urlPathEqualTo("/api/v1/person/institusjonsopphold"))
                 .withHeader("Accept", equalTo("application/json"))
-                .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(matchingJsonPath("identitetsnummer", equalTo("fnr")))
+                .withHeader("Nav-Personident", equalTo("fnr"))
+                .withHeader("Nav-Call-Id", equalTo("id"))
                 .willReturn(
                     aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(
-                            """{
-                                      "vedtak": [
-                                        {
-                                          "fom": "2018-01-01",
-                                          "tom": "2018-01-31",
-                                          "grad": 100
-                                        }
-                                      ]
-                                    }"""
+                            """[
+                                          {
+                                            "oppholdId": 0,
+                                            "tssEksternId": "string",
+                                            "organisasjonsnummer": "string",
+                                            "institusjonstype": "FO",
+                                            "varighet": "string",
+                                            "kategori": "S",
+                                            "startdato": "2020-01-01",
+                                            "faktiskSluttdato": "2020-01-31",
+                                            "forventetSluttdato": "2020-01-31",
+                                            "kilde": "string",
+                                            "overfoert": true,
+                                            "endretAv": "string",
+                                            "endringstidspunkt": "2020-09-30T10:47:17.319Z"
+                                          }
+                                    ]"""
                         )
                 )
         )
         stubFor(
-            post(urlPathEqualTo("/vedtak"))
+            get(urlPathEqualTo("/api/v1/person/institusjonsopphold"))
                 .withHeader("Accept", equalTo("application/json"))
-                .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(matchingJsonPath("identitetsnummer", equalTo("ikkeTilgang")))
+                .withHeader("Nav-Personident", equalTo("ikkeTilgang"))
+                .withHeader("Nav-Call-Id", equalTo("id"))
                 .willReturn(
                     aResponse()
                         .withStatus(401)

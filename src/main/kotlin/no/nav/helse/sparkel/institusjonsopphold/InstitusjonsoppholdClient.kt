@@ -1,4 +1,4 @@
-package no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold
+package no.nav.helse.sparkel.institusjonsopphold
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -16,7 +16,8 @@ internal class InstitusjonsoppholdClient(
     }
 
     internal fun hentInstitusjonsopphold(
-        fødselsnummer: String
+        fødselsnummer: String,
+        behovId: String
     ): JsonNode {
         val url = "${baseUrl}/api/v1/person/institusjonsopphold"
 
@@ -24,13 +25,10 @@ internal class InstitusjonsoppholdClient(
             requestMethod = "GET"
             connectTimeout = 10000
             readTimeout = 10000
-            //TODO: STS
             setRequestProperty("Authorization", "Bearer ${stsClient.token()}")
             setRequestProperty("Accept", "application/json")
-            //TODO: En ID som identifiserer kallkjeden som dette kallet er en del av.
-            setRequestProperty("Nav-Call-Id", "")
-            //TODO: ID’en på systemet som gjør kallet, som regel service brukeren til applikasjonen, for eksempel "srvsigrun".
-            setRequestProperty("Nav-Consumer-Id", "")
+            setRequestProperty("Nav-Call-Id", behovId)
+            setRequestProperty("Nav-Consumer-Id", "srvsparkelinst")
             setRequestProperty("Nav-Personident", fødselsnummer)
 
             val stream: InputStream? = if (responseCode < 300) this.inputStream else this.errorStream

@@ -2,9 +2,6 @@ package no.nav.helse.sparkel.institusjonsopphold
 
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.InstitusjonsoppholdClient
-import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.ServiceUser
-import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.StsRestClient
 import java.io.File
 
 fun main() {
@@ -14,7 +11,7 @@ fun main() {
 
 internal fun createApp(env: Map<String, String>): RapidsConnection {
     val stsClient = StsRestClient(
-        baseUrl = "${env.getValue("STS_BASE_URL")}",
+        baseUrl = env.getValue("STS_BASE_URL"),
         serviceUser = "/var/run/secrets/nais.io/service_user".let { ServiceUser("$it/username".readFile(), "$it/password".readFile()) }
     )
     val institusjonsoppholdClient = InstitusjonsoppholdClient(
@@ -24,7 +21,7 @@ internal fun createApp(env: Map<String, String>): RapidsConnection {
     val institusjonsoppholdService = InstitusjonsoppholdService(institusjonsoppholdClient)
 
     return RapidApplication.create(env).apply {
-//        Pleiepengerløser(this, pleiepengerService)
+        Institusjonsoppholdløser(this, institusjonsoppholdService)
     }
 }
 
