@@ -8,16 +8,15 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.sparkel.pleiepenger.pleiepenger.AzureClient
-import no.nav.helse.sparkel.pleiepenger.pleiepenger.PleiepengeClient
-import no.nav.helse.sparkel.pleiepenger.pleiepenger.Pleiepengerperiode
+import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance.Lifecycle
 
+@Disabled
 @TestInstance(Lifecycle.PER_CLASS)
-internal class PleiepengerløserTest {
+internal class InstitusjonsoppholdløserTest {
 
     private companion object {
         private const val orgnummer = "80000000"
@@ -29,7 +28,7 @@ internal class PleiepengerløserTest {
         .registerModule(JavaTimeModule())
 
     private lateinit var sendtMelding: JsonNode
-    private lateinit var service: PleiepengerService
+    private lateinit var service: InstitusjonsoppholdService
 
     private val context = object : RapidsConnection.MessageContext {
         override fun send(message: String) {
@@ -59,14 +58,12 @@ internal class PleiepengerløserTest {
         wireMockServer.start()
         configureFor(create().port(wireMockServer.port()).build())
         stubEksterneEndepunkt()
-        service = PleiepengerService(
-            PleiepengeClient(
+        service = InstitusjonsoppholdService(
+            InstitusjonsoppholdClient(
                 baseUrl = wireMockServer.baseUrl(),
-                accesstokenScope = "a_scope",
-                azureClient = AzureClient(
-                    tenantUrl = "${wireMockServer.baseUrl()}/AZURE_TENANT_ID",
-                    clientId = "client_id",
-                    clientSecret = "client_secret"
+                stsClient = StsRestClient(
+                    baseUrl = wireMockServer.baseUrl(),
+                    serviceUser = ServiceUser("", "")
                 )
             )
         )
@@ -100,12 +97,12 @@ internal class PleiepengerløserTest {
         assertTrue(perioder.isEmpty())
     }
 
-    private fun JsonNode.løsning() = this.path("@løsning").path(Pleiepengerløser.behov).map {
-        Pleiepengerperiode(it)
+    private fun JsonNode.løsning() = this.path("@løsning").path(Institusjonsoppholdløser.behov).map {
+        Institusjonsoppholdperiode(it)
     }
 
     private fun testBehov(behov: String) {
-        Pleiepengerløser(rapid, service)
+        Institusjonsoppholdløser(rapid, service)
         rapid.sendTestMessage(behov)
     }
 

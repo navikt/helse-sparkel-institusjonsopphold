@@ -2,12 +2,11 @@ package no.nav.helse.sparkel.pleiepenger
 
 import com.fasterxml.jackson.databind.JsonNode
 import net.logstash.logback.argument.StructuredArguments.keyValue
-import no.nav.helse.sparkel.pleiepenger.pleiepenger.PleiepengeClient
+import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.InstitusjonsoppholdClient
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
-import java.time.LocalDate
 
-internal class PleiepengerService(private val pleiepengeClient: PleiepengeClient) {
+internal class InstitusjonsoppholdService(private val institusjonsoppholdClient: InstitusjonsoppholdClient) {
 
     private val sikkerlogg = LoggerFactory.getLogger("tjenestekall")
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -15,15 +14,11 @@ internal class PleiepengerService(private val pleiepengeClient: PleiepengeClient
     fun løsningForBehov(
             behovId: String,
             vedtaksperiodeId: String,
-            fødselsnummer: String,
-            fom: LocalDate,
-            tom: LocalDate
+            fødselsnummer: String
     ): JsonNode? = withMDC("id" to behovId, "vedtaksperiodeId" to vedtaksperiodeId) {
         try {
-            val pleiepenger = pleiepengeClient.hentPleiepenger(
-                    fnr = fødselsnummer,
-                    fom = fom,
-                    tom = tom
+            val institusjonsopphold = institusjonsoppholdClient.hentInstitusjonsopphold(
+                    fødselsnummer = fødselsnummer
             )
             log.info(
                     "løser behov: {} for {}",
@@ -35,15 +30,15 @@ internal class PleiepengerService(private val pleiepengeClient: PleiepengeClient
                     keyValue("id", behovId),
                     keyValue("vedtaksperiodeId", vedtaksperiodeId)
             )
-            pleiepenger
+            institusjonsopphold
         } catch (err: Exception) {
             log.warn(
-                    "feil ved henting av pleiepenger-data: ${err.message} for {}",
+                    "feil ved henting av institusjonsopphold-data: ${err.message} for {}",
                     keyValue("vedtaksperiodeId", vedtaksperiodeId),
                     err
             )
             sikkerlogg.warn(
-                    "feil ved henting av pleiepenger-data: ${err.message} for {}",
+                    "feil ved henting av institusjonsopphold-data: ${err.message} for {}",
                     keyValue("vedtaksperiodeId", vedtaksperiodeId),
                     err
             )

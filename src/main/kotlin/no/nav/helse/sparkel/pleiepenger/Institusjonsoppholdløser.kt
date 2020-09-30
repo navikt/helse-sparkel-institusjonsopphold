@@ -1,20 +1,19 @@
 package no.nav.helse.sparkel.pleiepenger
 
-import com.fasterxml.jackson.databind.JsonNode
 import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.helse.rapids_rivers.*
-import no.nav.helse.sparkel.pleiepenger.pleiepenger.Pleiepengerperiode
+import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.Institusjonsoppholdperiode
 import org.slf4j.LoggerFactory
 
-internal class Pleiepengerløser(
+internal class Institusjonsoppholdløser(
         rapidsConnection: RapidsConnection,
-        private val pleiepengerService: PleiepengerService
+        private val institusjonsoppholdService: InstitusjonsoppholdService
 ) : River.PacketListener {
 
     private val sikkerlogg = LoggerFactory.getLogger("tjenestekall")
 
     companion object {
-        const val behov = "Pleiepenger"
+        const val behov = "Institusjonsopphold"
     }
 
     init {
@@ -24,8 +23,6 @@ internal class Pleiepengerløser(
             validate { it.requireKey("@id") }
             validate { it.requireKey("fødselsnummer") }
             validate { it.requireKey("vedtaksperiodeId") }
-            validate { it.require("pleiepengerFom", JsonNode::asLocalDate) }
-            validate { it.require("pleiepengerTom", JsonNode::asLocalDate) }
         }.register(this)
     }
 
@@ -35,15 +32,13 @@ internal class Pleiepengerløser(
 
     override fun onPacket(packet: JsonMessage, context: RapidsConnection.MessageContext) {
         sikkerlogg.info("mottok melding: ${packet.toJson()}")
-        pleiepengerService.løsningForBehov(
+        institusjonsoppholdService.løsningForBehov(
                 packet["@id"].asText(),
                 packet["vedtaksperiodeId"].asText(),
-                packet["fødselsnummer"].asText(),
-                packet["pleiepengerFom"].asLocalDate(),
-                packet["pleiepengerTom"].asLocalDate()
+                packet["fødselsnummer"].asText()
         ).let { løsning ->
             packet["@løsning"] = mapOf(
-                    behov to (løsning?.get("vedtak")?.map { Pleiepengerperiode(it) } ?: emptyList())
+                    behov to (løsning?.get("vedtak")?.map { Institusjonsoppholdperiode(it) } ?: emptyList())
             )
             context.send(packet.toJson().also { json ->
                 sikkerlogg.info(
