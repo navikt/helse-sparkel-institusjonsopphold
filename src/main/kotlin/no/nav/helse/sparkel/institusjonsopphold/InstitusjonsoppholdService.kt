@@ -1,8 +1,8 @@
-package no.nav.helse.sparkel.pleiepenger
+package no.nav.helse.sparkel.institusjonsopphold
 
 import com.fasterxml.jackson.databind.JsonNode
 import net.logstash.logback.argument.StructuredArguments.keyValue
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.InstitusjonsoppholdClient
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.InstitusjonsoppholdClient
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 

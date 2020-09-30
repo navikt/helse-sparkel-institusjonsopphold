@@ -1,8 +1,8 @@
-package no.nav.helse.sparkel.pleiepenger
+package no.nav.helse.sparkel.institusjonsopphold
 
 import net.logstash.logback.argument.StructuredArguments.keyValue
 import no.nav.helse.rapids_rivers.*
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.Institusjonsoppholdperiode
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.Institusjonsoppholdperiode
 import org.slf4j.LoggerFactory
 
 internal class Institusjonsoppholdløser(

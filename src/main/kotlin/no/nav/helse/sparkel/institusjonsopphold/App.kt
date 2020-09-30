@@ -1,10 +1,10 @@
-package no.nav.helse.sparkel.pleiepenger
+package no.nav.helse.sparkel.institusjonsopphold
 
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.InstitusjonsoppholdClient
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.ServiceUser
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.StsRestClient
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.InstitusjonsoppholdClient
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.ServiceUser
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.StsRestClient
 import java.io.File
 
 fun main() {

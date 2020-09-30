@@ -1,4 +1,4 @@
-package no.nav.helse.sparkel.pleiepenger
+package no.nav.helse.sparkel.institusjonsopphold
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -8,7 +8,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.sparkel.pleiepenger.institusjonsopphold.*
+import no.nav.helse.sparkel.institusjonsopphold.institusjonsopphold.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
