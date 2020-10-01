@@ -7,7 +7,7 @@ class Institusjonsoppholdperiode(jsonNode: JsonNode) {
     val institusjonstype = jsonNode["institusjonstype"].asEnumValue<Institusjonstype>()
     val kategori = jsonNode["kategori"].asEnumValue<Oppholdstype>()
     val startdato = jsonNode["startdato"].textValue().let { LocalDate.parse(it) }
-    val faktiskSluttdato = jsonNode["faktiskSluttdato"].takeUnless { it.isNull }?.textValue()?.let { LocalDate.parse(it) }
+    val faktiskSluttdato = jsonNode["faktiskSluttdato"]?.takeUnless { it.isNull }?.textValue()?.let { LocalDate.parse(it) }
 }
 
 enum class Institusjonstype(val beskrivelse: String) {
