@@ -79,7 +79,7 @@ internal class InstitusjonsoppholdløserTest {
 
         val perioder = sendtMelding.løsning()
 
-        assertEquals(1, perioder.size)
+        assertEquals(2, perioder.size)
     }
 
     @Test
@@ -109,7 +109,9 @@ internal class InstitusjonsoppholdløserTest {
             "@opprettet" : "2020-05-18",
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
-            "fødselsnummer" : "fnr"
+            "fødselsnummer" : "fnr",
+            "institusjonsoppholdFom": "2020-01-01",
+            "institusjonsoppholdTom": "2020-01-31"
         }
         """
 
@@ -122,7 +124,9 @@ internal class InstitusjonsoppholdløserTest {
             "@opprettet" : "2020-05-18",
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
-            "fødselsnummer" : "ikkeTilgang"
+            "fødselsnummer" : "ikkeTilgang",
+            "institusjonsoppholdFom": "2020-01-01",
+            "institusjonsoppholdTom": "2020-01-31"
         }
         """
 
@@ -163,6 +167,51 @@ internal class InstitusjonsoppholdløserTest {
                                             "startdato": "2020-01-01",
                                             "faktiskSluttdato": "2020-01-31",
                                             "forventetSluttdato": "2020-01-31",
+                                            "kilde": "string",
+                                            "overfoert": true,
+                                            "endretAv": "string",
+                                            "endringstidspunkt": "2020-09-30T10:47:17.319Z"
+                                          },
+                                          {
+                                            "oppholdId": 0,
+                                            "tssEksternId": "string",
+                                            "organisasjonsnummer": "string",
+                                            "institusjonstype": "FO",
+                                            "varighet": "string",
+                                            "kategori": "S",
+                                            "startdato": "2019-01-01",
+                                            "faktiskSluttdato": "2019-01-31",
+                                            "forventetSluttdato": "2019-01-31",
+                                            "kilde": "string",
+                                            "overfoert": true,
+                                            "endretAv": "string",
+                                            "endringstidspunkt": "2020-09-30T10:47:17.319Z"
+                                          },
+                                          {
+                                            "oppholdId": 0,
+                                            "tssEksternId": "string",
+                                            "organisasjonsnummer": "string",
+                                            "institusjonstype": "FO",
+                                            "varighet": "string",
+                                            "kategori": "S",
+                                            "startdato": "2019-01-01",
+                                            "faktiskSluttdato": null,
+                                            "forventetSluttdato": "2019-01-31",
+                                            "kilde": "string",
+                                            "overfoert": true,
+                                            "endretAv": "string",
+                                            "endringstidspunkt": "2020-09-30T10:47:17.319Z"
+                                          },
+                                          {
+                                            "oppholdId": 0,
+                                            "tssEksternId": "string",
+                                            "organisasjonsnummer": "string",
+                                            "institusjonstype": "FO",
+                                            "varighet": "string",
+                                            "kategori": "S",
+                                            "startdato": "2020-02-01",
+                                            "faktiskSluttdato": null,
+                                            "forventetSluttdato": "2020-03-31",
                                             "kilde": "string",
                                             "overfoert": true,
                                             "endretAv": "string",

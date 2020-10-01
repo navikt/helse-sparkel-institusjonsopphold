@@ -8,6 +8,14 @@ class Institusjonsoppholdperiode(jsonNode: JsonNode) {
     val kategori = jsonNode["kategori"].asEnumValue<Oppholdstype>()
     val startdato = jsonNode["startdato"].textValue().let { LocalDate.parse(it) }
     val faktiskSluttdato = jsonNode["faktiskSluttdato"]?.takeUnless { it.isNull }?.textValue()?.let { LocalDate.parse(it) }
+
+    internal companion object {
+        internal fun List<Institusjonsoppholdperiode>.filtrer(fom: LocalDate, tom: LocalDate) = filter { it.overlapperMed(fom, tom) }
+    }
+
+    internal fun overlapperMed(fom: LocalDate, tom: LocalDate) =
+        maxOf(startdato, fom) <= faktiskSluttdato?.let { minOf(it, tom) } ?: tom
+
 }
 
 enum class Institusjonstype(val beskrivelse: String) {
