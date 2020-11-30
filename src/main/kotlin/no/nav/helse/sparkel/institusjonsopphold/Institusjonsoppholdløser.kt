@@ -24,8 +24,8 @@ internal class Institusjonsoppholdløser(
             validate { it.requireKey("@id") }
             validate { it.requireKey("fødselsnummer") }
             validate { it.requireKey("vedtaksperiodeId") }
-            validate { it.require("institusjonsoppholdFom", JsonNode::asLocalDate) }
-            validate { it.require("institusjonsoppholdTom", JsonNode::asLocalDate) }
+            validate { it.require("$behov.institusjonsoppholdFom", JsonNode::asLocalDate) }
+            validate { it.require("$behov.institusjonsoppholdTom", JsonNode::asLocalDate) }
         }.register(this)
     }
 
@@ -35,8 +35,8 @@ internal class Institusjonsoppholdløser(
 
     override fun onPacket(packet: JsonMessage, context: RapidsConnection.MessageContext) {
         sikkerlogg.info("mottok melding: ${packet.toJson()}")
-        val fom = packet["institusjonsoppholdFom"].asLocalDate()
-        val tom = packet["institusjonsoppholdTom"].asLocalDate()
+        val fom = packet["$behov.institusjonsoppholdFom"].asLocalDate()
+        val tom = packet["$behov.institusjonsoppholdTom"].asLocalDate()
         institusjonsoppholdService.løsningForBehov(
             packet["@id"].asText(),
             packet["vedtaksperiodeId"].asText(),

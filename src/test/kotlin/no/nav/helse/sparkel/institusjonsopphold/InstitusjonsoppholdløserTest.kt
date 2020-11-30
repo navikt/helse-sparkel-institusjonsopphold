@@ -110,8 +110,10 @@ internal class InstitusjonsoppholdløserTest {
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
             "fødselsnummer" : "fnr",
-            "institusjonsoppholdFom": "2020-01-01",
-            "institusjonsoppholdTom": "2020-01-31"
+            "Institusjonsopphold": {
+                "institusjonsoppholdFom": "2020-01-01",
+                "institusjonsoppholdTom": "2020-01-31"
+            }
         }
         """
 
@@ -125,8 +127,10 @@ internal class InstitusjonsoppholdløserTest {
             "spleisBehovId" : "spleisBehovId",
             "vedtaksperiodeId" : "vedtaksperiodeId",
             "fødselsnummer" : "ikkeTilgang",
-            "institusjonsoppholdFom": "2020-01-01",
-            "institusjonsoppholdTom": "2020-01-31"
+            "Institusjonsopphold": {
+                "institusjonsoppholdFom": "2020-01-01",
+                "institusjonsoppholdTom": "2020-01-31"
+            }
         }
         """
 
