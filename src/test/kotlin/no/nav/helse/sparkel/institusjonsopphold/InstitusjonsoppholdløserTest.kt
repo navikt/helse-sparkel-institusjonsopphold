@@ -24,23 +24,19 @@ internal class InstitusjonsoppholdløserTest {
     private lateinit var sendtMelding: JsonNode
     private lateinit var service: InstitusjonsoppholdService
 
-    private val context = object : RapidsConnection.MessageContext {
-        override fun send(message: String) {
-            sendtMelding = objectMapper.readTree(message)
-        }
-
-        override fun send(key: String, message: String) {}
-    }
-
     private val rapid = object : RapidsConnection() {
 
         fun sendTestMessage(message: String) {
-            listeners.forEach { it.onMessage(message, context) }
+            listeners.forEach { it.onMessage(message, this) }
         }
 
-        override fun publish(message: String) {}
+        override fun publish(message: String) {
+            sendtMelding = objectMapper.readTree(message)
+        }
 
-        override fun publish(key: String, message: String) {}
+        override fun publish(key: String, message: String) {
+            sendtMelding = objectMapper.readTree(message)
+        }
 
         override fun start() {}
 

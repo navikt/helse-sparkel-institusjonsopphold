@@ -29,11 +29,11 @@ internal class Institusjonsoppholdløser(
         }.register(this)
     }
 
-    override fun onError(problems: MessageProblems, context: RapidsConnection.MessageContext) {
+    override fun onError(problems: MessageProblems, context: MessageContext) {
         sikkerlogg.error("forstod ikke $behov med melding\n${problems.toExtendedReport()}")
     }
 
-    override fun onPacket(packet: JsonMessage, context: RapidsConnection.MessageContext) {
+    override fun onPacket(packet: JsonMessage, context: MessageContext) {
         sikkerlogg.info("mottok melding: ${packet.toJson()}")
         val fom = packet["$behov.institusjonsoppholdFom"].asLocalDate()
         val tom = packet["$behov.institusjonsoppholdTom"].asLocalDate()
@@ -45,7 +45,7 @@ internal class Institusjonsoppholdløser(
             packet["@løsning"] = mapOf(
                 behov to (løsning?.map { Institusjonsoppholdperiode(it) }?.filtrer(fom, tom) ?: emptyList())
             )
-            context.send(packet.toJson().also { json ->
+            context.publish(packet.toJson().also { json ->
                 sikkerlogg.info(
                     "sender svar {} for {}:\n\t{}",
                     keyValue("id", packet["@id"].asText()),
